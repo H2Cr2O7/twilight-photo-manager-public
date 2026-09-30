@@ -12,6 +12,76 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
     <title>トワイライト | AI写真管理</title>
+    <style>
+      /* dvh/svh フォールバック (Safari < 15.4 / 古いiPad) — dvh未対応時にvhが適用される */
+      .app-shell { height: 100vh; }
+      .detail-dialog { height: min(850px, 100vh); }
+      .upload-dialog { max-height: calc(100vh - 32px); }
+      .cover-editor { max-height: calc(100vh - 32px); }
+      .selection-action-panel { max-height: min(72vh, 620px); }
+      .photo-share-screen { max-height: min(820px, 100vh); }
+      .h-svh { height: 100vh; }
+      .min-h-svh { min-height: 100vh; }
+      @media (max-width: 820px) { .detail-dialog { height: calc(100vh - 24px); } .photo-share-screen { max-height: calc(100vh - 24px); } }
+      @media (max-width: 560px) { .app-sidebar { height: 100vh; } }
+    </style>
+    <script>
+      // ポリフィル: 古いSafari (iPadOS < 15.4) 対応
+      (function () {
+        if (!Array.prototype.at) {
+          Object.defineProperty(Array.prototype, 'at', {
+            configurable: true, writable: true, value: function (n) {
+              n = Math.trunc(n) || 0;
+              if (n < 0) n += this.length;
+              if (n < 0 || n >= this.length) return void 0;
+              return this[n];
+            }
+          });
+        }
+        if (!String.prototype.at) {
+          Object.defineProperty(String.prototype, 'at', {
+            configurable: true, writable: true, value: function (n) {
+              n = Math.trunc(n) || 0;
+              if (n < 0) n += this.length;
+              if (n < 0 || n >= this.length) return void 0;
+              return this.charAt(n);
+            }
+          });
+        }
+        if (!String.prototype.replaceAll) {
+          Object.defineProperty(String.prototype, 'replaceAll', {
+            configurable: true, writable: true, value: function (p, r) {
+              if (p instanceof RegExp) {
+                if (!p.global) throw new TypeError('replaceAll called with non-global RegExp');
+                return this.replace(p, r);
+              }
+              var t = String(this);
+              p = String(p);
+              if (p === '') return t.split('').join(String(r));
+              var esc = p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              return t.replace(new RegExp(esc, 'g'), r);
+            }
+          });
+        }
+        if (typeof crypto !== 'undefined' && !crypto.randomUUID) {
+          Object.defineProperty(crypto, 'randomUUID', {
+            configurable: true, writable: true, value: function () {
+              return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var v = c === 'x' ? Math.random() * 16 | 0 : (Math.random() * 16 | 0) & 0x3 | 0x8;
+                return v.toString(16);
+              });
+            }
+          });
+        }
+        if (!Object.hasOwn) {
+          Object.defineProperty(Object, 'hasOwn', {
+            configurable: true, writable: true, value: function (o, p) {
+              return Object.prototype.hasOwnProperty.call(o, p);
+            }
+          });
+        }
+      })();
+    </script>
     <script type="module" crossorigin src="/assets/index-CrHOYhKx-fix.js?v=504244a"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-CaRkDzFE.css">
   </head>
